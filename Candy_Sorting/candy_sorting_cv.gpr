@@ -1,0 +1,27 @@
+with "../OpenMV_BSP/openmv2.gpr";
+
+project Candy_Sorting_CV is
+
+   type BOARD_TYPE is ("OpenMV", "429DISCO", "4DISCO");
+   Board : BOARD_Type := external ("BOARD", "OpenMV");
+
+   case Board is
+      when "OpenMV" =>
+         for Runtime ("ada") use "ravenscar-full-openmv2";
+      when "429DISCO" =>
+         for Runtime ("ada") use "ravenscar-full-stm32f429disco";
+      when "4DISCO" =>
+         for Runtime ("ada") use "ravenscar-full-stm32f4";
+   end case;
+
+   for Languages use ("Ada");
+   for Target use "arm-eabi";
+   for Source_Dirs use ("src");
+   for Object_Dir use "obj";
+   for Main use ("main.adb");
+
+   package Compiler renames OpenMV2.Compiler;
+   package Builder renames OpenMV2.Builder;
+
+ end Candy_Sorting_CV;
+
