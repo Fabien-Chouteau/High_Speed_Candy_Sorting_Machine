@@ -1,91 +1,20 @@
-with Interfaces;           use Interfaces;
-with Interfaces.Bit_Types; use Interfaces.Bit_Types;
 with Ada.Numerics.Generic_Elementary_Functions;
-with OpenMV.Constant_Tables;
+with Constant_Tables;
 
-package body OpenMV.Image is
+package body Image is
 
    package Float_Functions is new
      Ada.Numerics.Generic_Elementary_Functions (Float);
    use Float_Functions;
 
-   function To_Short (C : Color) return Short with Inline_Always;
-   function To_RGB (Raw : Short) return Color with Inline_Always;
-   function To_RGB (Raw : Short) return RGB_Float with Inline_Always;
-   function Byte_Swap (Raw : Short) return Short with Inline_Always;
-
-   --------------
-   -- To_Short --
-   --------------
-
-   function To_Short (C : Color) return Short is
-      R, G, B : Short;
-   begin
-      R := Shift_Right (Short (C.R), 3);
-      R := Shift_Left (R and 16#1F#, 11);
-
-      G := Shift_Right (Short (C.G), 2);
-      G := Shift_Left (G and 16#3F#, 5);
-
-      B := Shift_Right (Short (C.B), 3) and 16#1F#;
-      return Byte_Swap (R or G or B);
-   end To_Short;
-
    ------------
    -- To_RGB --
    ------------
 
-   function To_RGB (Raw : Short) return Color is
-      R, G, B : RGB_Component;
-      Tmp : constant Short := Byte_Swap (Raw);
-   begin
-
-      R := RGB_Component (Shift_Left (Shift_Right (Tmp, 11) and 16#1F#, 3));
-      G := RGB_Component (Shift_Left (Shift_Right (Tmp, 5) and 16#3F#, 2));
-      B := RGB_Component (Shift_Left (Tmp and 16#1F#, 3));
-
-      return (R, G, B);
-   end To_RGB;
-
-   function To_RGB (Raw : Short) return RGB_Float is
-      (To_RGB (To_RGB (Raw)));
-
-   ----------------
-   -- Byte_Shift --
-   ----------------
-
-   function Byte_Swap (Raw : Short) return Short is
-     (Shift_Left (Raw and 16#FF#, 8) or Shift_Right (Raw and 16#FF00#, 8));
-
-   ----------
-   -- Fill --
-   ----------
-
-   procedure Fill (C : Color) is
-      Raw : constant Short := To_Short (C);
-   begin
-      for Elt of FB.Data.all loop
-         Elt := Raw;
-      end loop;
-   end Fill;
-
-   ---------------
-   -- Set_Pixel --
-   ---------------
-
-   procedure Set_Pixel (X : Width; Y : Height; C : Color) is
-   begin
-      FB.Data (X + Y * Image_Width) := To_Short (C);
-   end Set_Pixel;
-
-   ------------
-   -- To_RGB --
-   ------------
-
-   function To_RGB (C : Color) return RGB_Float is
-     (Float (C.R),
-      Float (C.G),
-      Float (C.B));
+   function To_RGB (C : Bitmap_Color) return RGB_Float is
+     (Float (C.Red),
+      Float (C.Green),
+      Float (C.Blue));
 
    ----------------
    -- RGB_To_HSV --
@@ -130,7 +59,7 @@ package body OpenMV.Image is
    -- To_LAB --
    ------------
 
-   function To_LAB (C : Color) return LAB_Color is
+   function To_LAB (C : Bitmap_Color) return LAB_Color is
       --  Based on imlib.c from the OpenMV project
       --
       --  This file is part of the OpenMV project.
@@ -138,9 +67,9 @@ package body OpenMV.Image is
       --  This work is licensed under the MIT license, see the file LICENSE
       --  for details.
       --
-      R : constant Float := Constant_Tables.XYZ_Table (C.R);
-      G : constant Float := Constant_Tables.XYZ_Table (C.G);
-      B : constant Float := Constant_Tables.XYZ_Table (C.B);
+      R : constant Float := Constant_Tables.XYZ_Table (C.Red);
+      G : constant Float := Constant_Tables.XYZ_Table (C.Green);
+      B : constant Float := Constant_Tables.XYZ_Table (C.Blue);
       X : Float;
       Y : Float;
       Z : Float;
@@ -181,14 +110,13 @@ package body OpenMV.Image is
       C    : constant Float := (C1.B - C2.B) ** 2;
    begin
       return Sqrt (A + B + C);
---        return (A + B + C);
    end Distance;
 
    --------------
    -- Distance --
    --------------
 
-   function Distance (C1, C2 : Color) return Float is
+   function Distance (C1, C2 : Bitmap_Color) return Float is
    begin
       return Distance (To_LAB (C1), To_LAB (C2));
    end Distance;
@@ -196,8 +124,9 @@ package body OpenMV.Image is
    ----------
    -- Test --
    ----------
+
    type Ref_Color is record
-      C   : Color;
+      C   : Bitmap_Color;
       Lab : LAB_Color;
    end record;
 
@@ -212,7 +141,7 @@ package body OpenMV.Image is
       (White,       To_LAB (White))
      );
 
-   procedure Test is
+   procedure Test (BM : Bitmap_Buffer'Class) is
       Lab       : LAB_Color;
       Dist      : Float;
       Min_Dist  : Float;
@@ -224,34 +153,36 @@ package body OpenMV.Image is
       --  Display a line of each reference color
       for Ref of Ref_Colors loop
          for X in Cnt * 5 .. (Cnt + 1) * 5 - 1 loop
-            for Y in Height'Range loop
-               Set_Pixel (X, Y, Ref.C);
+            for Y in 0 .. BM.Height - 1 loop
+               BM.Set_Pixel (X, Y, Ref.C);
             end loop;
          end loop;
          Cnt := Cnt + 1;
       end loop;
 
       --  Seach for reference colors
-      for Index in FB.Data.all'First .. FB.Data.all'Last loop
-         Lab := To_LAB (To_RGB (FB.Data.all (Index)));
-         New_Color := Candy_White;
-         Min_Dist := Float'Last;
-         for Ref in Candy_Colors loop
-            Dist := Distance (Lab, Ref_Colors (Ref).Lab);
-            if Dist < Min_Dist then
-               Min_Dist  := Dist;
-               New_Color := Ref;
-            end if;
-         end loop;
-         if Min_Dist > 750.0 then
+      for X in 0 .. BM.Width - 1 loop
+         for Y in 0 .. BM.Height - 1 loop
+            Lab := To_LAB (BM.Get_Pixel (X, Y));
             New_Color := Candy_White;
-         end if;
+            Min_Dist := Float'Last;
+            for Ref in Candy_Colors loop
+               Dist := Distance (Lab, Ref_Colors (Ref).Lab);
+               if Dist < Min_Dist then
+                  Min_Dist  := Dist;
+                  New_Color := Ref;
+               end if;
+            end loop;
+            if Min_Dist > 750.0 then
+               New_Color := Candy_White;
+            end if;
 
-         if New_Color /= Candy_White then
-            Color_Cnt (New_Color) := Color_Cnt (New_Color) + 1;
-         end if;
+            if New_Color /= Candy_White then
+               Color_Cnt (New_Color) := Color_Cnt (New_Color) + 1;
+            end if;
 
-         FB.Data.all (Index) := To_Short (Ref_Colors (New_Color).C);
+            BM.Set_Pixel (X, Y, Ref_Colors (New_Color).C);
+         end loop;
       end loop;
 
       --  Show the dominant color
@@ -264,11 +195,11 @@ package body OpenMV.Image is
          end if;
       end loop;
 
-      for X in Width'Last - 5 .. Width'Last loop
-         for Y in Height'Range loop
-            Set_Pixel (X, Y, Ref_Colors (New_Color).C);
+      for X in BM.Width - 6 .. BM.Width - 1 loop
+         for Y in 0 .. BM.Height - 1 loop
+            BM.Set_Pixel (X, Y, Ref_Colors (New_Color).C);
          end loop;
       end loop;
    end Test;
 
-end OpenMV.Image;
+end Image;

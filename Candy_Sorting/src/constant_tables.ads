@@ -1,7 +1,8 @@
 --  Do not touch! This file was automgically generated.
-with OpenMV.Image; use OpenMV.Image;
-package OpenMV.Constant_Tables is
-   XYZ_Table : array (RGB_Component) of Float := (
+with HAL; use HAL;
+
+package Constant_Tables is
+   XYZ_Table : array (Byte) of Float := (
      0.0000000, 0.0000004, 0.0000019, 0.0000050, 0.0000101, 0.0000172,
      0.0000266, 0.0000385, 0.0000531, 0.0000704, 0.0000906, 0.3346536,
      0.3676507, 0.4024717, 0.4391442, 0.4776953, 0.5181517, 0.5605392,
@@ -46,4 +47,4 @@ package OpenMV.Constant_Tables is
      92.1581856, 93.0110858, 93.8685728, 94.7306537, 95.5973353, 96.4686248,
      97.3445290, 98.2250550, 99.1102097, 100.0000000);
 
-end OpenMV.Constant_Tables;
+end Constant_Tables;

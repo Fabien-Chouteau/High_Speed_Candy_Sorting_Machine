@@ -1,4 +1,4 @@
-with "../OpenMV_BSP/openmv2.gpr";
+with "../OpenMV_BSP/drivers/boards/openmv2.gpr";
 
 project Candy_Sorting_CV is
 

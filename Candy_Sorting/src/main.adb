@@ -1,7 +1,7 @@
 with OpenMV;
 with OpenMV.LCD_Shield;
 with OpenMV.Sensor;
-with OpenMV.Image;
+with Image;
 
 with Last_Chance_Handler;
 pragma Unreferenced (Last_Chance_Handler);
@@ -13,8 +13,10 @@ begin
    OpenMV.LCD_Shield.Initialize;
    OpenMV.Sensor.Initialize;
    loop
-      OpenMV.Sensor.Snapshot;
-      OpenMV.Image.Test;
+      OpenMV.Sensor.Snapshot (OpenMV.LCD_Shield.Get_Bitmap);
+
+      Image.Test (OpenMV.LCD_Shield.Get_Bitmap);
+
       OpenMV.LCD_Shield.Display;
    end loop;
 end Main;
