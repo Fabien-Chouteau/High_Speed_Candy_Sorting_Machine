@@ -3,7 +3,17 @@ with HAL.Bitmap; use HAL.Bitmap;
 package Image is
 
    type Candy_Colors is (Candy_Red, Candy_Orange, Candy_Yellow, Candy_Green,
-                         Candy_Blue, Candy_Maroon, Candy_White);
+                         Candy_Blue, Candy_Brown, Candy_White)
+     with Size => 3;
+
+   Reference_Color : array (Candy_Colors) of Bitmap_Color :=
+     (Candy_Red    => Brown,
+      Candy_Orange => Orange,
+      Candy_Yellow => Yellow,
+      Candy_Green  => Lime_Green,
+      Candy_Blue   =>  Medium_Blue,
+      Candy_Brown  => Black,
+      Candy_White  => White);
 
    type RGB_Float is record
       R, G, B : Float := 0.0;
@@ -23,144 +33,4 @@ package Image is
    function Distance (C1, C2 : LAB_Color) return Float with Inline_Always;
    function Distance (C1, C2 : Bitmap_Color) return Float with Inline_Always;
 
-   procedure Test (BM : Bitmap_Buffer'Class);
-
-   function Dark_Red            return Bitmap_Color is ((255, 139, 000, 000));
-   function Brown               return Bitmap_Color is ((255, 165, 042, 042));
-   function Firebrick           return Bitmap_Color is ((255, 178, 034, 034));
-   function Crimson             return Bitmap_Color is ((255, 220, 020, 060));
-   function Red                 return Bitmap_Color is ((255, 255, 000, 000));
-   function Tomato              return Bitmap_Color is ((255, 255, 099, 071));
-   function Coral               return Bitmap_Color is ((255, 255, 127, 080));
-   function Indian_Red          return Bitmap_Color is ((255, 205, 092, 092));
-   function Light_Coral         return Bitmap_Color is ((255, 240, 128, 128));
-   function Dark_Salmon         return Bitmap_Color is ((255, 233, 150, 122));
-   function Salmon              return Bitmap_Color is ((255, 250, 128, 114));
-   function Light_Salmon        return Bitmap_Color is ((255, 255, 160, 122));
-   function Orange_Red          return Bitmap_Color is ((255, 255, 069, 000));
-   function Dark_Orange         return Bitmap_Color is ((255, 255, 140, 000));
-   function Orange              return Bitmap_Color is ((255, 255, 165, 000));
-   function Gold                return Bitmap_Color is ((255, 255, 215, 000));
-   function Dark_Golden_Rod     return Bitmap_Color is ((255, 184, 134, 011));
-   function Golden_Rod          return Bitmap_Color is ((255, 218, 165, 032));
-   function Pale_Golden_Rod     return Bitmap_Color is ((255, 238, 232, 170));
-   function Dark_Khaki          return Bitmap_Color is ((255, 189, 183, 107));
-   function Khaki               return Bitmap_Color is ((255, 240, 230, 140));
-   function Olive               return Bitmap_Color is ((255, 128, 128, 000));
-   function Yellow              return Bitmap_Color is ((255, 255, 255, 000));
-   function Yellow_Green        return Bitmap_Color is ((255, 154, 205, 050));
-   function Dark_Olive_Green    return Bitmap_Color is ((255, 085, 107, 047));
-   function Olive_Drab          return Bitmap_Color is ((255, 107, 142, 035));
-   function Lawn_Green          return Bitmap_Color is ((255, 124, 252, 000));
-   function Chart_Reuse         return Bitmap_Color is ((255, 127, 255, 000));
-   function Green_Yellow        return Bitmap_Color is ((255, 173, 255, 047));
-   function Dark_Green          return Bitmap_Color is ((255, 000, 100, 000));
-   function Green               return Bitmap_Color is ((255, 000, 255, 000));
-   function Maroon              return Bitmap_Color is ((255, 128, 000, 000));
-   function Forest_Green        return Bitmap_Color is ((255, 034, 139, 034));
-   function Lime                return Bitmap_Color is ((255, 000, 255, 000));
-   function Lime_Green          return Bitmap_Color is ((255, 050, 205, 050));
-   function Light_Green         return Bitmap_Color is ((255, 144, 238, 144));
-   function Pale_Green          return Bitmap_Color is ((255, 152, 251, 152));
-   function Dark_Sea_Green      return Bitmap_Color is ((255, 143, 188, 143));
-   function Medium_Spring_Green return Bitmap_Color is ((255, 000, 250, 154));
-   function Spring_Green        return Bitmap_Color is ((255, 000, 255, 127));
-   function Sea_Green           return Bitmap_Color is ((255, 046, 139, 087));
-   function Medium_Aqua_Marine  return Bitmap_Color is ((255, 102, 205, 170));
-   function Medium_Sea_Green    return Bitmap_Color is ((255, 060, 179, 113));
-   function Light_Sea_Green     return Bitmap_Color is ((255, 032, 178, 170));
-   function Dark_Slate_Gray     return Bitmap_Color is ((255, 047, 079, 079));
-   function Teal                return Bitmap_Color is ((255, 000, 128, 128));
-   function Dark_Cyan           return Bitmap_Color is ((255, 000, 139, 139));
-   function Aqua                return Bitmap_Color is ((255, 000, 255, 255));
-   function Cyan                return Bitmap_Color is ((255, 000, 255, 255));
-   function Light_Cyan          return Bitmap_Color is ((255, 224, 255, 255));
-   function Dark_Turquoise      return Bitmap_Color is ((255, 000, 206, 209));
-   function Turquoise           return Bitmap_Color is ((255, 064, 224, 208));
-   function Medium_Turquoise    return Bitmap_Color is ((255, 072, 209, 204));
-   function Pale_Turquoise      return Bitmap_Color is ((255, 175, 238, 238));
-   function Aqua_Marine         return Bitmap_Color is ((255, 127, 255, 212));
-   function Powder_Blue         return Bitmap_Color is ((255, 176, 224, 230));
-   function Cadet_Blue          return Bitmap_Color is ((255, 095, 158, 160));
-   function Steel_Blue          return Bitmap_Color is ((255, 070, 130, 180));
-   function Corn_Flower_Blue    return Bitmap_Color is ((255, 100, 149, 237));
-   function Deep_Sky_Blue       return Bitmap_Color is ((255, 000, 191, 255));
-   function Dodger_Blue         return Bitmap_Color is ((255, 030, 144, 255));
-   function Light_Blue          return Bitmap_Color is ((255, 173, 216, 230));
-   function Sky_Blue            return Bitmap_Color is ((255, 135, 206, 235));
-   function Light_Sky_Blue      return Bitmap_Color is ((255, 135, 206, 250));
-   function Midnight_Blue       return Bitmap_Color is ((255, 025, 025, 112));
-   function Navy                return Bitmap_Color is ((255, 000, 000, 128));
-   function Dark_Blue           return Bitmap_Color is ((255, 000, 000, 139));
-   function Medium_Blue         return Bitmap_Color is ((255, 000, 000, 205));
-   function Blue                return Bitmap_Color is ((255, 000, 000, 255));
-   function Royal_Blue          return Bitmap_Color is ((255, 065, 105, 225));
-   function Blue_Violet         return Bitmap_Color is ((255, 138, 043, 226));
-   function Indigo              return Bitmap_Color is ((255, 075, 000, 130));
-   function Dark_Slate_Blue     return Bitmap_Color is ((255, 072, 061, 139));
-   function Slate_Blue          return Bitmap_Color is ((255, 106, 090, 205));
-   function Medium_Slate_Blue   return Bitmap_Color is ((255, 123, 104, 238));
-   function Medium_Purple       return Bitmap_Color is ((255, 147, 112, 219));
-   function Dark_Magenta        return Bitmap_Color is ((255, 139, 000, 139));
-   function Dark_Violet         return Bitmap_Color is ((255, 148, 000, 211));
-   function Dark_Orchid         return Bitmap_Color is ((255, 153, 050, 204));
-   function Medium_Orchid       return Bitmap_Color is ((255, 186, 085, 211));
-   function Purple              return Bitmap_Color is ((255, 128, 000, 128));
-   function Thistle             return Bitmap_Color is ((255, 216, 191, 216));
-   function Plum                return Bitmap_Color is ((255, 221, 160, 221));
-   function Violet              return Bitmap_Color is ((255, 238, 130, 238));
-   function Magenta             return Bitmap_Color is ((255, 255, 000, 255));
-   function Orchid              return Bitmap_Color is ((255, 218, 112, 214));
-   function Medium_Violet_Red   return Bitmap_Color is ((255, 199, 021, 133));
-   function Pale_Violet_Red     return Bitmap_Color is ((255, 219, 112, 147));
-   function Deep_Pink           return Bitmap_Color is ((255, 255, 020, 147));
-   function Hot_Pink            return Bitmap_Color is ((255, 255, 105, 180));
-   function Light_Pink          return Bitmap_Color is ((255, 255, 182, 193));
-   function Pink                return Bitmap_Color is ((255, 255, 192, 203));
-   function Antique_White       return Bitmap_Color is ((255, 250, 235, 215));
-   function Beige               return Bitmap_Color is ((255, 245, 245, 220));
-   function Bisque              return Bitmap_Color is ((255, 255, 228, 196));
-   function Blanched_Almond     return Bitmap_Color is ((255, 255, 235, 205));
-   function Wheat               return Bitmap_Color is ((255, 245, 222, 179));
-   function Corn_Silk           return Bitmap_Color is ((255, 255, 248, 220));
-   function Lemon_Chiffon       return Bitmap_Color is ((255, 255, 250, 205));
-   function Light_Yellow        return Bitmap_Color is ((255, 255, 255, 224));
-   function Saddle_Brown        return Bitmap_Color is ((255, 139, 069, 019));
-   function Sienna              return Bitmap_Color is ((255, 160, 082, 045));
-   function Chocolate           return Bitmap_Color is ((255, 210, 105, 030));
-   function Peru                return Bitmap_Color is ((255, 205, 133, 063));
-   function Sandy_Brown         return Bitmap_Color is ((255, 244, 164, 096));
-   function Burly_Wood          return Bitmap_Color is ((255, 222, 184, 135));
-   function Tan                 return Bitmap_Color is ((255, 210, 180, 140));
-   function Rosy_Brown          return Bitmap_Color is ((255, 188, 143, 143));
-   function Moccasin            return Bitmap_Color is ((255, 255, 228, 181));
-   function Navajo_White        return Bitmap_Color is ((255, 255, 222, 173));
-   function Peach_Puff          return Bitmap_Color is ((255, 255, 218, 185));
-   function Misty_Rose          return Bitmap_Color is ((255, 255, 228, 225));
-   function Lavender_Blush      return Bitmap_Color is ((255, 255, 240, 245));
-   function Linen               return Bitmap_Color is ((255, 250, 240, 230));
-   function Old_Lace            return Bitmap_Color is ((255, 253, 245, 230));
-   function Papaya_Whip         return Bitmap_Color is ((255, 255, 239, 213));
-   function Sea_Shell           return Bitmap_Color is ((255, 255, 245, 238));
-   function Mint_Cream          return Bitmap_Color is ((255, 245, 255, 250));
-   function Slate_Gray          return Bitmap_Color is ((255, 112, 128, 144));
-   function Light_Slate_Gray    return Bitmap_Color is ((255, 119, 136, 153));
-   function Light_Steel_Blue    return Bitmap_Color is ((255, 176, 196, 222));
-   function Lavender            return Bitmap_Color is ((255, 230, 230, 250));
-   function Floral_White        return Bitmap_Color is ((255, 255, 250, 240));
-   function Alice_Blue          return Bitmap_Color is ((255, 240, 248, 255));
-   function Ghost_White         return Bitmap_Color is ((255, 248, 248, 255));
-   function Honeydew            return Bitmap_Color is ((255, 240, 255, 240));
-   function Ivory               return Bitmap_Color is ((255, 255, 255, 240));
-   function Azure               return Bitmap_Color is ((255, 240, 255, 255));
-   function Snow                return Bitmap_Color is ((255, 255, 250, 250));
-   function Black               return Bitmap_Color is ((255, 000, 000, 000));
-   function Dim_Grey            return Bitmap_Color is ((255, 105, 105, 105));
-   function Grey                return Bitmap_Color is ((255, 128, 128, 128));
-   function Dark_Grey           return Bitmap_Color is ((255, 169, 169, 169));
-   function Silver              return Bitmap_Color is ((255, 192, 192, 192));
-   function Light_Grey          return Bitmap_Color is ((255, 211, 211, 211));
-   function Gainsboro           return Bitmap_Color is ((255, 220, 220, 220));
-   function White_Smoke         return Bitmap_Color is ((255, 245, 245, 245));
-   function White               return Bitmap_Color is ((255, 255, 255, 255));
 end Image;
