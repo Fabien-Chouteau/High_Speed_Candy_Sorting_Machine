@@ -6,8 +6,11 @@ with Color_Detection;
 
 with Last_Chance_Handler;
 pragma Unreferenced (Last_Chance_Handler);
+with Image; use Image;
 
 procedure Main is
+
+   Detected_Color : Candy_Colors;
 begin
    OpenMV.Initialize_LEDs;
    OpenMV.Set_RGB_LED (OpenMV.White);
@@ -29,11 +32,19 @@ begin
    loop
       OpenMV.Sensor.Snapshot (OpenMV.LCD_Shield.Get_Bitmap);
 
-      Color_Detection.Filter_Image (OpenMV.LCD_Shield.Get_Bitmap,
-                                    Region_X => 50,
-                                    Region_Y => 50,
-                                    Region_W => 50,
-                                    Region_H => 50);
+      Detected_Color := Color_Detection.Filter_Image
+        (OpenMV.LCD_Shield.Get_Bitmap,
+         Region_X => 50,
+         Region_Y => 50,
+         Region_W => 50,
+         Region_H => 50);
+
+      Fill_Rect (Buffer => OpenMV.LCD_Shield.Get_Bitmap,
+                 Color  => Reference_Color (Detected_Color),
+                 X      => 20,
+                 Y      => 20,
+                 Width  => 20,
+                 Height => 20);
 
       OpenMV.LCD_Shield.Display;
    end loop;
