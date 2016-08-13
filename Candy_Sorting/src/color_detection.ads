@@ -10,6 +10,13 @@ package Color_Detection is
    function Pixel_To_Candy_Color (Pix : Short) return Candy_Colors
      with Pre => Initialized;
 
-   procedure Filter_Image (BM : Bitmap_Buffer'Class);
+   procedure Filter_Image (BM : Bitmap_Buffer'Class;
+                           Region_X, Region_Y,
+                           Region_W, Region_H : Integer := 0)
+     with Pre => Initialized and then
+     Region_X in 0 .. BM.Width - 1 and then
+     Region_Y in 0 .. BM.Height - 1 and then
+     Region_X + Region_W in 0 .. BM.Width - 1 and then
+     Region_Y + Region_H in 0 .. BM.Width - 1;
 
 end Color_Detection;

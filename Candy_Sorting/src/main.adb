@@ -29,7 +29,11 @@ begin
    loop
       OpenMV.Sensor.Snapshot (OpenMV.LCD_Shield.Get_Bitmap);
 
-      Color_Detection.Filter_Image (OpenMV.LCD_Shield.Get_Bitmap);
+      Color_Detection.Filter_Image (OpenMV.LCD_Shield.Get_Bitmap,
+                                    Region_X => 50,
+                                    Region_Y => 50,
+                                    Region_W => 50,
+                                    Region_H => 50);
 
       OpenMV.LCD_Shield.Display;
    end loop;

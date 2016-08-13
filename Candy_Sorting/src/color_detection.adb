@@ -67,10 +67,17 @@ package body Color_Detection is
    -- Filter_Image --
    ------------------
 
-   procedure Filter_Image (BM : Bitmap_Buffer'Class) is
+   procedure Filter_Image (BM : Bitmap_Buffer'Class;
+                           Region_X, Region_Y,
+                           Region_W, Region_H : Integer := 0)
+   is
       Pix_Word : Word;
       Candy    : Candy_Colors;
       Cnt      : Natural := 0;
+      Stop_X : constant Integer :=
+        (if Region_W = 0 then BM.Width - 1 else Region_X + Region_W);
+      Stop_Y : constant Integer :=
+        (if Region_H = 0 then BM.Height - 1 else Region_Y + Region_H);
    begin
       --  Display a line of each reference color
       for Ref of Reference_Color loop
@@ -82,8 +89,8 @@ package body Color_Detection is
          Cnt := Cnt + 1;
       end loop;
 
-      for X in 0 .. BM.Width - 1 loop
-         for Y in 0 .. BM.Height - 1 loop
+      for X in Region_X .. Stop_X loop
+         for Y in Region_Y .. Stop_Y loop
             Pix_Word := BM.Get_Pixel (X, Y);
             Candy := Pixel_To_Candy_Color (Short (Pix_Word));
             Pix_Word := Bitmap_Color_To_Word (RGB_565,
